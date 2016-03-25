@@ -48,16 +48,27 @@ module LicenseAuto
                     #     else
                     #       spec.source.remotes
                     #     end
-                    spec.source.remotes.map {|r|
-                      r.to_s
-                    }.join(',')
+                    spec.source.remotes.reject {|remote|
+                      Gems.configure do |config|
+                        config.host = remote.to_s
+                      end
+                      LicenseAuto.logger.debug(remote.to_s)
+                      # begin
+                        Gems.info(spec.name) == RubyGemsOrg::GEM_NOT_FOUND
+                      # rescue Exception => e
+                      #   true
+                      # end
+                    }
+                    #     .map {|r|
+                    #   r.to_s
+                    # }.join(',')
                   end
                 when spec.source.class == ::Bundler::Source::Path::Installer
                   # Untested
                   spec.full_gem_path
                 else
                   # TODO:
-                  # LicenseAuto.logger.debug(spec.source.class)
+
                 # remotes = s.source.options['remotes']
               end
 
@@ -69,6 +80,7 @@ module LicenseAuto
         }
       }
       LicenseAuto.logger.debug(JSON.pretty_generate(dep_files))
+      dep_files
     end
   end
 end

@@ -32,7 +32,15 @@ def fixture_path
   File.expand_path('../fixtures', __FILE__)
 end
 
+class FixtureFileNotExist < StandardError
+
+end
+
 def fixture(file)
   file = file.gsub(/^http[s]?(:\/\/)/, '')
-  File.new(fixture_path + '/' + file)
+  begin
+    File.new(fixture_path + '/' + file)
+  rescue Errno::ENOENT => e
+    raise FixtureFileNotExist
+  end
 end

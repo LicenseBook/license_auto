@@ -29,7 +29,14 @@ group :test do
   # gem 'mina-puma', :git => 'https://github.com/sandelius/mina-puma.git'
 end
 
+
+
 group :development do
   gem "rake"
 end
+
+# A test used public gem hosted on third-party gem-server
+# source 'https://gem.fury.io/mineworks/' do
+#   gem 'gemfury_hola'
+# end
 
