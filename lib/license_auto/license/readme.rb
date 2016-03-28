@@ -28,6 +28,7 @@ end
 
 class Markdown
   FILE_EXTENSION = /\.(md|markdown)$/i
+  # FIXME: spec should not contains `## Others`, how to fix the regex?
   PATTERN = /(?<text>^##\s*(license|copy|copying)(.*\n*)*)($|(?=\n^##))/i
 
   def self.cut_license(content)

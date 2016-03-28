@@ -26,7 +26,7 @@ describe Readme do
     readme_content = open(readme_uri).read
     markdown = Readme.new(readme_uri, readme_content)
     expect(markdown.license_content).to_not eq(nil)
-    # LicenseAuto.logger.debug(html.class)
+    LicenseAuto.logger.debug(markdown.license_content)
   end
 end
 
