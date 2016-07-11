@@ -23,9 +23,10 @@ class GithubCom < Website
   # user: string
   # repo: string
   # ref: string
-  def initialize(package, user, repo, ref=nil, auto_pagination=false)
+  def initialize(package, user, repo, ref=nil, auto_pagination=false,last_commit=nil)
     super(package)
     @ref = ref
+    @last_commit = last_commit
     @url = "https://github.com/#{user}/#{repo}"
     LicenseAuto.logger.debug(@url)
 
@@ -169,7 +170,7 @@ class GithubCom < Website
     LicenseAuto.logger.debug(clone_url)
 
     trimmed_url = clone_url.gsub(/^http[s]?:\/\//, '')
-    clone_dir = "#{LUTO_CACHE_DIR}/#{trimmed_url}"
+    clone_dir = "#{LUTO_CACHE_DIR}/#{trimmed_url}"+(@last_commit?"/#{@last_commit}":"")
     LicenseAuto.logger.debug(clone_dir)
 
     if Dir.exist?(clone_dir)
@@ -177,12 +178,15 @@ class GithubCom < Website
       local_branch = git.branches.local[0].full
       if local_branch == @ref
         git.pull(remote='origin', branch=local_branch)
+        git.checkout(git.gcommit(@last_commit))
       else
         FileUtils::rm_rf(clone_dir)
-        do_clone(clone_url, clone_dir)
+        git = do_clone(clone_url, clone_dir)
+        git.checkout(git.gcommit(@last_commit)) if @last_commit
       end
     else
-      do_clone(clone_url, clone_dir)
+      git = do_clone(clone_url, clone_dir)
+      git.checkout(git.gcommit(@last_commit)) if @last_commit
     end
     clone_dir
   end
@@ -190,7 +194,7 @@ class GithubCom < Website
   def do_clone(clone_url, clone_dir)
     LicenseAuto.logger.debug(@ref)
     clone_opts = {
-        :depth => 1, # Only last commit history for fast
+        #:depth => 1, # Only last commit history for fast
         :branch => @ref
     }
     LicenseAuto.logger.debug(clone_url)

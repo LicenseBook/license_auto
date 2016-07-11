@@ -24,6 +24,7 @@ module LicenseAuto
         @repo_dir = clone_url
         @server = []
       else
+        @last_commit = hash[:last_commit]
         @server = chose_repo_server
         raise("#{hash} is not a Github Repo") unless @server
         @repo_dir = nil
@@ -131,8 +132,7 @@ module LicenseAuto
       github_matched = source_code_matcher.match_github_resource
       if github_matched
         # TODO: pass argument: ref
-
-        @server = GithubCom.new({}, github_matched[:owner], github_matched[:repo], ref=self.ref)
+        @server = GithubCom.new({}, github_matched[:owner], github_matched[:repo], ref=self.ref,false,last_commit=@last_commit)
       end
     end
   end
