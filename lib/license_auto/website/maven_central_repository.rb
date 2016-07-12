@@ -143,7 +143,7 @@ module LicenseAuto
       if query_set.nil?
         LicenseAuto.logger.error("Maven search result is empty")
       else
-        query_set.response.docs.each {|doc|
+        query_set.response.docs.each { |doc|
           if doc.v == @version && doc.ec.include?('.pom')
             pom_url, pom_str = get_package_pom(@group_id, @artifact_id, @version)
             if pom_str
@@ -197,9 +197,10 @@ module LicenseAuto
       /<pre>(.*)<\/pre>/m=~pom_str
       return nil if !$1
 
-      pom_str = $1.gsub(/<\/?.*?>/,"").gsub("&lt;","<").gsub("&gt;",">").gsub("&quot;","\"")
-      parser_pom(pom_str,pom_str)
+      pom_str = $1.gsub(/<\/?.*?>/, "").gsub("&lt;", "<").gsub("&gt;", ">").gsub("&quot;", "\"")
+      parser_pom(pom_str, pom_str)
     end
+
     # @return homepage, source_url, licenses_file
     def parser_pom(pom_url, pom_str)
       LicenseAuto.logger.debug("pom_str:\n#{pom_str[0..70]}")
@@ -226,7 +227,7 @@ module LicenseAuto
       LicenseAuto.logger.debug("licenses: \n#{licenses_node.to_xml}")
 
       # Multi licenses: https://maven-repository.com/artifact/org.cryptacular/cryptacular/1.0
-      license_files = licenses_node.map {|node|
+      license_files = licenses_node.map { |node|
         license_name = if node.xpath(".//name")
                          node.xpath(".//name").text.gsub(/\s/, '')
                        end
