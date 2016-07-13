@@ -16,11 +16,16 @@ module LicenseAuto
                                            :filename => LUTO_CONF.logger.file,
                                            :trunc => false,
                                            :level => LUTO_LOG_LEVEL)
+    date_file_output = Log4r::DateFileOutputter.new("data_file_output",
+                                                    :dirname => File.dirname(LORK_CONF.logger.file),
+                                                    :date_pattern => '%Y%m%d%H',
+                                                    :trunc => false)
     formatter = Log4r::PatternFormatter.new(:pattern => "%C %.1l %d %p => %M  %t")
     stdout_output.formatter = formatter
     file_output.formatter = formatter
+    date_file_output.formatter = formatter
 
-    @logger.outputters = [stdout_output, file_output]
+    @logger.outputters = [stdout_output,  date_file_output]
 
     @logger
   end
