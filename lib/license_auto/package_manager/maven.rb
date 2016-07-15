@@ -28,7 +28,7 @@ module LicenseAuto
         LicenseAuto.logger.info("#{LANGUAGE}: #{dependency_file_pattern} file not exist")
         []
       else
-        build_files.map {|dep_file|
+        build_files.map { |dep_file|
           LicenseAuto.logger.debug(dep_file)
 
           {
@@ -43,9 +43,10 @@ module LicenseAuto
     # @return example
     # => Array: [{:name=>"junit:junit", :version=>"4.8", :remote=>nil}]
     def collect_dependencies
+      mvninstall unless resolve_dependencies
       deps =
           if resolve_dependencies
-            list_dependencies.map {|dep|
+            list_dependencies.map { |dep|
               group, name, type, version, scope = dep.split(':')
               {
                   name: [group, name].join(':'),
@@ -58,6 +59,13 @@ module LicenseAuto
           end
       LicenseAuto.logger.debug(deps)
       deps
+    end
+
+    def mvninstall
+      Dir.chdir(@path) do
+        cmd = 'mvn install'
+        stdout_str, stderr_str, _status = Open3.capture3(cmd)
+      end
     end
 
     def resolve_dependencies
@@ -104,11 +112,11 @@ module LicenseAuto
           out, err, _st = Open3.capture3(cmd)
           # LicenseAuto.logger.debug("#{out}")
           if out.include?("The following files have been resolved:")
-            out.split("\n").each {|line|
+            out.split("\n").each { |line|
               matched = DEPENDENCY_PATTERN.match(line)
               # LicenseAuto.logger.debug("#{line}, matched: #{matched}")
               if matched
-                group_name_version = line.gsub!(/\[INFO\]/,'').strip!
+                group_name_version = line.gsub!(/\[INFO\]/, '').strip!
                 deps.add(group_name_version)
               end
             }
