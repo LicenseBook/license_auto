@@ -68,6 +68,8 @@ module LicenseAuto
                             when spec.source.class == ::Bundler::Source::Path::Installer
                               # Untested
                               spec.full_gem_path
+                            when spec.source.class == ::Bundler::Source::Path
+                              "."
                             else
                               raise('Yo, this error should ever not occur!')
                           end
