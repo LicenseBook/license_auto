@@ -244,7 +244,7 @@ module LicenseAuto
                          # TODO: add proxy
                          begin
                            response = HTTParty.get(license_url, timeout: 10)
-                           response.body if response.code == 200
+                           response.body.encode('UTF-8', :invalid => :replace, :undef => :replace) if response.code == 200
                          rescue Net::OpenTimeout => e
                            e.to_s
                          rescue NoMethodError
