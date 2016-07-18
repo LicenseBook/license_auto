@@ -23,7 +23,7 @@ class GithubCom < Website
   # user: string
   # repo: string
   # ref: string
-  def initialize(package, user, repo, ref=nil, auto_pagination=false,last_commit=nil)
+  def initialize(package, user, repo, ref=nil, auto_pagination=false, last_commit=nil)
     super(package)
     @ref = ref
     @last_commit = last_commit
@@ -31,15 +31,15 @@ class GithubCom < Website
     LicenseAuto.logger.debug(@url)
 
     @server =
-      begin
-        eval('WebMock')
-        LicenseAuto.logger.debug("Running LicenseAuto in RSpec mode")
-        Github.new(user: user, repo: repo)
-      rescue NameError => e
-        LicenseAuto.logger.debug("Running LicenseAuto in formal mode")
-        basic_auth = "#{LUTO_CONF.github.username}:#{LUTO_CONF.github.access_token}"
-        Github.new(user: user, repo: repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
-      end
+        begin
+          eval('WebMock')
+          LicenseAuto.logger.debug("Running LicenseAuto in RSpec mode")
+          Github.new(user: user, repo: repo)
+        rescue NameError => e
+          LicenseAuto.logger.debug("Running LicenseAuto in formal mode")
+          basic_auth = "#{LUTO_CONF.github.username}:#{LUTO_CONF.github.access_token}"
+          Github.new(user: user, repo: repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
+        end
   end
 
   ##
@@ -54,7 +54,7 @@ class GithubCom < Website
     license_files = []
     readme_files = []
     notice_files = []
-    contents.each {|obj|
+    contents.each { |obj|
       if obj.type == 'file'
         filename_matcher = LicenseAuto::Matcher::FilepathName.new(obj.name)
         license_files.push(obj) if filename_matcher.match_license_file
@@ -63,19 +63,19 @@ class GithubCom < Website
       end
     }
 
-    license_files = license_files.map {|obj|
+    license_files = license_files.map { |obj|
       license_content = get_blobs(obj['sha'])
       license_name, sim_ratio = LicenseAuto::Similarity.new(license_content).most_license_sim
       LicenseAuto::LicenseWrapper.new(
-        name: license_name,
-        sim_ratio: sim_ratio,
-        html_url: obj['html_url'],
-        download_url: obj['download_url'],
-        text: license_content
+          name: license_name,
+          sim_ratio: sim_ratio,
+          html_url: obj['html_url'],
+          download_url: obj['download_url'],
+          text: license_content
       )
     }
 
-    readme_files = readme_files.map {|obj|
+    readme_files = readme_files.map { |obj|
       readme_content = get_blobs(obj['sha'])
       license_content = LicenseAuto::Readme.new(obj['download_url'], readme_content).license_content
       LicenseAuto.logger.debug("readme_content:\n#{license_content}\n")
@@ -93,7 +93,7 @@ class GithubCom < Website
       end
     }.compact
 
-    notice_files = notice_files.map {|obj|
+    notice_files = notice_files.map { |obj|
       notice_content = get_blobs(obj['sha'])
       LicenseAuto.logger.debug("notice_content:\n#{notice_content}\n")
 
@@ -170,7 +170,7 @@ class GithubCom < Website
     LicenseAuto.logger.debug(clone_url)
 
     trimmed_url = clone_url.gsub(/^http[s]?:\/\//, '')
-    clone_dir = "#{LUTO_CACHE_DIR}/#{trimmed_url}"+(@last_commit?"/#{@last_commit}":"")
+    clone_dir = "#{LUTO_CACHE_DIR}/#{trimmed_url}"+(@last_commit ? "/#{@last_commit}" : "")
     LicenseAuto.logger.debug(clone_dir)
 
     if Dir.exist?(clone_dir)
@@ -179,6 +179,7 @@ class GithubCom < Website
       if local_branch == @ref
         git.pull(remote='origin', branch=local_branch)
         git.checkout(git.gcommit(@last_commit))
+      elsif @last_commit && local_branch=="(HEAD detached at "+@last_commit[0..6].downcase+")"
       else
         FileUtils::rm_rf(clone_dir)
         git = do_clone(clone_url, clone_dir)
