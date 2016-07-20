@@ -32,8 +32,16 @@ module LicenseAuto
       gem_files = dependency_file_path_names(pattern=gemfile_pattern)
       if lock_files.empty? && !gem_files.empty?
         env_bundle_gemfile, ENV["BUNDLE_GEMFILE"] = ENV["BUNDLE_GEMFILE"], nil
+        # Ruby Change the follow env variable also,if bundle lock different from outside,then can try the follow variable
+        #ENV["GEM_HOME"] = nil
+        #ENV["GEM_PATH"] = nil
+        #ENV["BUNDLE_BIN_PATH"] = nil
+        #ENV["RUBYLIB"] = nil
+        #ENV["RUBYOPT"] = nil
         Dir.chdir(@path) do
-          cmd = 'bundle install'
+          #http://blog.csdn.net/alada007/article/details/8035316
+          #use bundle lock to generate gemfile.lock file
+          cmd = 'bundle lock'
           stdout_str, stderr_str, _status = Open3.capture3(cmd)
           LicenseAuto.logger.debug(stdout_str) if stdout_str
           LicenseAuto.logger.error(stderr_str) if stderr_str
