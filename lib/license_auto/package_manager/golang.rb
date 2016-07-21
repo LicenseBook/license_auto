@@ -57,14 +57,19 @@ module LicenseAuto
       github_matched = matcher.match_github_resource
       if github_matched
         github = GithubCom.new({}, github_matched[:owner], github_matched[:repo])
-        latest_commit = github.latest_commit
-        latest_sha =
-          if latest_commit.class == Array
-            # Eg. ["message", "Moved Permanently"]:Array
-            latest_commit[1]
-          else
-            latest_commit.sha
-          end
+        begin
+          latest_commit = github.latest_commit
+          latest_sha =
+              if latest_commit.class == Array
+                # Eg. ["message", "Moved Permanently"]:Array
+                latest_commit[1]
+              else
+                latest_commit.sha
+              end
+        rescue
+          latest_sha = "can't access"
+        end
+
         url = github.url
         # LicenseAuto.logger.debug(latest_sha)
         [url, latest_sha]
