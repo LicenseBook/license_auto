@@ -47,7 +47,7 @@ module LicenseAuto
       deps =
           if resolve_dependencies
             list_dependencies.map { |dep|
-              group, name, type, version, scope = dep.split(':')
+              group, name, type, *classifier, version, scope = dep.split(':')
               {
                   name: [group, name].join(':'),
                   version: version,
