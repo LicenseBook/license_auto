@@ -26,10 +26,14 @@ module LicenseAuto
       else
         @last_commit = hash[:last_commit]
         @server = chose_repo_server
-        raise("#{hash} is not a Github Repo") unless @server
+        #raise("#{hash} is not a Github Repo") unless @server
         @repo_dir = nil
       end
 
+    end
+
+    def server
+      @server
     end
 
     def self.package_managers
