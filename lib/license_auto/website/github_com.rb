@@ -42,6 +42,9 @@ class GithubCom < Website
         end
   end
 
+  def server
+    @server
+  end
   ##
   # @return LicenseInfoWrapper
 
