@@ -38,7 +38,7 @@ module LicenseAuto
 
   class Markdown
     FILE_EXTENSION = /\.(md|markdown)$/i
-    PATTERN = /(?<text>^##\s*(license|copy|copying)(.*\n*)*)($|(?=\n^##))/i
+    PATTERN = /(?<text>^[#]{2,3}\s*(license|copy|copying)(.*\n*)*)($|(?=\n^##))/i
 
     def self.cut_license(content)
       matched = PATTERN.match(content)
