@@ -60,7 +60,7 @@ module LicenseAuto
         if !stdout_str.empty?
           LicenseAuto.logger.debug(stdout_str)
           stdout_str.split("\n").each {|line|
-            if line =~ %r{^[-\+\s]([0-9a-fA-F]{40})\s+([\w\s\/\.]+)\s?\(?}i
+            if line =~ %r{^[-\+\s]([0-9a-fA-F]{40})\s+([\w\s\/\.-]+)\s?\(?}i
               versions[Regexp.last_match[2].strip] = Regexp.last_match[1]
             end
           }
