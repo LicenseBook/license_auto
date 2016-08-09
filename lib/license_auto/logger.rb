@@ -3,6 +3,12 @@ require 'license_auto/config/config'
 
 module LicenseAuto
   def self.logger
+    #if use in LicenseBook,use LicenseBook's logger
+    begin
+      return License.logger if License.logger
+    rescue Exception
+    end
+
     return @logger if @logger
     @logger = Log4r::Logger.new("license_auto")
     @logger.trace = true
