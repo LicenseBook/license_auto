@@ -74,7 +74,8 @@ class RubyGemsOrg < Website
     pack_wrapper = LicenseAuto::PackWrapper.new(
         project_url: gem_info.project_uri,
         homepage: gem_info.homepage_uri,
-        source_url: gem_info.source_code_uri || source_code_matcher.url
+        source_url: license_info[:pack][:source_url] ||
+                    gem_info.source_code_uri || source_code_matcher.url
     )
 
     license_info[:pack] = pack_wrapper

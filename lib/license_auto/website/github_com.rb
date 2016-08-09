@@ -47,9 +47,17 @@ class GithubCom < Website
   end
   ##
   # @return LicenseInfoWrapper
-
-  def get_license_info()
-    possible_ref = @ref || match_versioned_ref
+  ## default_branch : nil, Get a specific version license
+  ##                  true, Get a default branch license
+  def get_license_info(default_branch = nil)
+    pack_url = nil
+    if default_branch
+      possible_ref = nil
+      pack_url = @url
+    else
+      possible_ref = @ref || match_versioned_ref
+      pack_url = @url + "/tree/#{possible_ref}"
+    end
     LicenseAuto.logger.debug("possible_ref: #{possible_ref}")
     # If possible_ref is nil, the Github API server will return the default branch contents
     contents = @server.repos.contents.get(path: '/', ref: possible_ref)
@@ -114,8 +122,11 @@ class GithubCom < Website
     pack_wrapper = LicenseAuto::PackWrapper.new(
         homepage: nil,
         project_url: nil,
-        source_url: @url
+        source_url: pack_url || @url
     )
+    if default_branch == nil and license_files.empty? and readme_files.empty?
+      return get_license_info(true)
+    end
     LicenseAuto::LicenseInfoWrapper.new(
         licenses: license_files,
         readmes: readme_files,
