@@ -22,7 +22,7 @@ class RubyGemsOrg < Website
   def get_license_info()
     if @package.version.nil?
       begin
-        @package.version = get_latest_version['number']
+        @package.version = get_latest_version[' number']
       rescue Exception => e
         LicenseAuto.logger.error(e)
         return nil

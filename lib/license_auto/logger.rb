@@ -12,16 +12,16 @@ module LicenseAuto
     return @logger if @logger
     @logger = Log4r::Logger.new("license_auto")
     @logger.trace = true
-    @logger.level = LUTO_LOG_LEVEL
+    @logger.level = AUTO_LOG_LEVEL
 
     @logger.add(Log4r::Outputter.stderr)
     @logger.add(Log4r::Outputter.stdout)
 
     stdout_output = Log4r::StdoutOutputter.new('stdout')
     file_output = Log4r::FileOutputter.new("file_output",
-                                           :filename => LUTO_CONF.logger.file,
+                                           :filename => AUTO_CONF.logger.file,
                                            :trunc => false,
-                                           :level => LUTO_LOG_LEVEL)
+                                           :level => AUTO_LOG_LEVEL)
     date_file_output = Log4r::DateFileOutputter.new("data_file_output",
                                                     :dirname => File.dirname(LORK_CONF.logger.file),
                                                     :date_pattern => '%Y%m%d%H',

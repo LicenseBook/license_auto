@@ -3,7 +3,7 @@ require 'yaml'
 require 'hashie/mash'
 
 # Aka LICENSE_AUTO_CONF
-LUTO_CONF =
+AUTO_CONF =
     begin
       Hashie::Mash.new(YAML.load_file('/etc/license_auto.conf.yml'))
     rescue Errno::ENOENT
@@ -14,8 +14,8 @@ LUTO_CONF =
 
 
 # LicenseAuto logger level
-LUTO_LOG_LEVEL =
-    case LUTO_CONF.logger.level
+AUTO_LOG_LEVEL =
+    case AUTO_CONF.logger.level
     when 'debug'
       Log4r::DEBUG
     when 'info'
@@ -30,9 +30,9 @@ LUTO_LOG_LEVEL =
       Log4r::DEBUG
     end
 
-LUTO_ROOT_DIR = LUTO_CONF.dirs.root
-LUTO_CACHE_DIR = "#{LUTO_ROOT_DIR}/#{LUTO_CONF.dirs.cache}"
+AUTO_ROOT_DIR = AUTO_CONF.dirs.root
+AUTO_CACHE_DIR = "#{AUTO_ROOT_DIR}/#{AUTO_CONF.dirs.cache}"
 
-unless FileTest.directory?(LUTO_CACHE_DIR)
-  FileUtils.mkdir_p(LUTO_CACHE_DIR)
+unless FileTest.directory?(AUTO_CACHE_DIR)
+  FileUtils.mkdir_p(AUTO_CACHE_DIR)
 end
