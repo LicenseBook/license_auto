@@ -13,7 +13,7 @@ group :default do
   # gem "license_finder"
   gem "httparty"
   gem "nokogiri"
-  gem "anemone"
+  gem "anemone" #UbuntuLaunchpad.rb
   gem 'rest-client'
   # This package should install by bundler as bellow:
   # gem 'bzip2-ruby', :git => 'https://github.com/chewi/bzip2-ruby.git'

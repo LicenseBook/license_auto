@@ -7,6 +7,7 @@ require 'license_auto/website/github_com'
 require 'license_auto/website/npm_registry'
 require 'license_auto/website/maven_central_repository'
 require 'license_auto/website/bower_herokuapp_com'
+require 'license_auto/website/ubuntu_launchpad'
 
 
 module LicenseAuto
@@ -123,6 +124,11 @@ module LicenseAuto
                 else
                   LicenseAuto.logger.fatal("Maven server: #{self.server} should be supported!")
                 end
+            elsif self.language == 'Ubuntu'
+              # distribution = 'ubuntu'
+              # distro_series = 'trusty'
+              # architecture='amd64'
+              UbuntuLaunchpad.new(self)
             elsif self.server
               # PACKAGE_SERVERS.fetch(self.language.to_sym).new(self)
               matcher = Matcher::SourceURL.new(self.server)

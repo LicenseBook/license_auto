@@ -4,12 +4,17 @@ require 'hashie/mash'
 
 # Aka LICENSE_AUTO_CONF
 AUTO_CONF =
+    # begin
+    #   Hashie::Mash.new(YAML.load_file('/etc/license_auto.conf.yml'))
+    # rescue Errno::ENOENT
+    #   sample_filename_path = File.expand_path('../sample.config.yml', __FILE__)
+    #   puts "Using config: #{sample_filename_path}"
+    #   Hashie::Mash.new(YAML.load_file(sample_filename_path))
+    # end
     begin
-      Hashie::Mash.new(YAML.load_file('/etc/license_auto.conf.yml'))
-    rescue Errno::ENOENT
-      sample_filename_path = File.expand_path('../sample.config.yml', __FILE__)
-      puts "Using config: #{sample_filename_path}"
-      Hashie::Mash.new(YAML.load_file(sample_filename_path))
+        sample_filename_path = File.expand_path('../sample.config.yml', __FILE__)
+        puts "Using config: #{sample_filename_path}"
+        Hashie::Mash.new(YAML.load_file(sample_filename_path))
     end
 
 
@@ -32,7 +37,12 @@ AUTO_LOG_LEVEL =
 
 AUTO_ROOT_DIR = AUTO_CONF.dirs.root
 AUTO_CACHE_DIR = "#{AUTO_ROOT_DIR}/#{AUTO_CONF.dirs.cache}"
+AUTO_LAUNCHPAD_SOURCE_DIR = "#{AUTO_CACHE_DIR}/launchpad_source"
 
 unless FileTest.directory?(AUTO_CACHE_DIR)
   FileUtils.mkdir_p(AUTO_CACHE_DIR)
+end
+
+unless FileTest.directory?(AUTO_LAUNCHPAD_SOURCE_DIR)
+  FileUtils.mkdir_p(AUTO_LAUNCHPAD_SOURCE_DIR)
 end

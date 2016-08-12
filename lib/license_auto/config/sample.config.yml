@@ -8,6 +8,8 @@ github:
   access_token: '<your 40 char token>'
 
 http:
+#  use_proxy: true
+  use_proxy: false
   time_out: 480
   proxy:
     host: 'proxy.example.com'
