@@ -37,7 +37,7 @@ class GithubCom < Website
           Github.new(user: user, repo: repo)
         rescue NameError => e
           LicenseAuto.logger.debug("Running LicenseAuto in formal mode")
-          basic_auth = "#{LUTO_CONF.github.username}:#{LUTO_CONF.github.access_token}"
+          basic_auth = "#{AUTO_CONF.github.username}:#{AUTO_CONF.github.access_token}"
           Github.new(user: user, repo: repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
         end
   end
@@ -184,7 +184,7 @@ class GithubCom < Website
     LicenseAuto.logger.debug(clone_url)
 
     trimmed_url = clone_url.gsub(/^http[s]?:\/\//, '')
-    clone_dir = "#{LUTO_CACHE_DIR}/#{trimmed_url}"+(@last_commit ? "/#{@last_commit}" : "")
+    clone_dir = "#{AUTO_CACHE_DIR}/#{trimmed_url}"+(@last_commit ? "/#{@last_commit}" : "")
     LicenseAuto.logger.debug(clone_dir)
 
     if Dir.exist?(clone_dir)
