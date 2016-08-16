@@ -1,7 +1,7 @@
 .gradle/
 foo.rb
-*.patch
-*.diff
+#*.patch
+#*.diff
 node_modules/
 auto.log
 *~

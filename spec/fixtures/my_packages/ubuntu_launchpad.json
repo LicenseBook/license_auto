@@ -1,0 +1,7 @@
+{
+  "language": "Ubuntu",//                # Ruby|Golang|Java|NodeJS|Erlang|Python|
+  "name": "anacron",
+  "group": "",        // # Optional: Assign nil if your package is not a Java
+  "version": "2.3-20ubuntu1",//               # Optional: Assign nil if check the latest
+  "server": "https://launchpad.net/"//   # Optional: github.com|rubygems.org|pypi.python.org/pypi|registry.npmjs.org
+}

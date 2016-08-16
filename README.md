@@ -22,7 +22,7 @@
     <td>Gemfile(.lock)</td>
     <td>https://rubygems.org/</td>
     <!-- <td> https://rubygems.org/pages/data</td> -->
-    <td>70</td>
+    <td>100</td>
   </tr>
   <tr>
     <td>Java</td>
@@ -39,17 +39,17 @@
     <td>100</td>
   </tr>
   <tr>
-      <td>Debian</td>
+      <td>Debian/Ubuntu</td>
       <td>dpkg -l</td>
       <td></td>
       <td>https://launchpad.net/</td>
-      <td>0</td>
+      <td>50</td>
   </tr>
   <tr>
     <td>Golang</td>
     <td>go list -json ./...</td>
-    <td></td>
-    <td></td>
+    <td>xxx.go</td>
+    <td>source URL</td>
     <td>50</td>
   </tr>
   <tr>
@@ -95,8 +95,9 @@ gem install license_auto
 ```
 
 ## Configure
+[config](https://github.com/LicenseBook/license_auto/blob/master/lib/license_auto/config/sample.config.yml)
 ```
-sudo cp license_auto/config/sample.config.yml /etc/license_auto.conf.yml
+lib/license_auto/config/sample.config.yml
 git config --global git-credential
 ```
 
