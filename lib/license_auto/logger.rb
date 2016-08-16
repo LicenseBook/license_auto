@@ -1,5 +1,6 @@
 require 'log4r'
 require 'license_auto/config/config'
+require 'log4r/outputter/datefileoutputter'
 
 module LicenseAuto
   def self.logger
@@ -23,7 +24,7 @@ module LicenseAuto
                                            :trunc => false,
                                            :level => AUTO_LOG_LEVEL)
     date_file_output = Log4r::DateFileOutputter.new("data_file_output",
-                                                    :dirname => File.dirname(LUTO_CONF.logger.file),
+                                                    :dirname => File.dirname(AUTO_CONF.logger.file),
                                                     :date_pattern => '%Y%m%d%H',
                                                     :trunc => false)
     formatter = Log4r::PatternFormatter.new(:pattern => "%C %.1l %d %p => %M  %t")
