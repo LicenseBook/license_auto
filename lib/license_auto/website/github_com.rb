@@ -45,6 +45,11 @@ class GithubCom < Website
   def server
     @server
   end
+
+  def ref=(ref=nil)
+    @ref=ref
+  end
+
   ##
   # @return LicenseInfoWrapper
   ## default_branch : nil, Get a specific version license
@@ -217,7 +222,8 @@ class GithubCom < Website
   end
 
   def repo_info
-    @server.repos.get
+    return @repoinfo if @repoinfo
+    @repoinfo = @server.repos.get
   end
 
   def filter_gitmodules
