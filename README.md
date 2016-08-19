@@ -140,3 +140,10 @@ rake spec
 * Groovy gradle: optional
 * ~~CMake~~
 * Fork Github official licenses text sample or SPDX template
+* new source_url parse
+```
+Name:unicorn
+Version:4.9.0
+Language:Ruby
+Origin:https://rubygems.org/
+```
