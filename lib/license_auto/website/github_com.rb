@@ -27,6 +27,8 @@ class GithubCom < Website
     super(package)
     @ref = ref
     @last_commit = last_commit
+    @user = user
+    @repo = repo
     @url = "https://github.com/#{user}/#{repo}"
     LicenseAuto.logger.debug(@url)
 
@@ -38,7 +40,18 @@ class GithubCom < Website
         rescue NameError => e
           LicenseAuto.logger.debug("Running LicenseAuto in formal mode")
           basic_auth = "#{AUTO_CONF.github.username}:#{AUTO_CONF.github.access_token}"
-          Github.new(user: user, repo: repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
+          server = Github.new(user: @user, repo: @repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
+          @repoinfo = server.repos.get
+          if  @repoinfo.headers.status == 301
+            response = HTTParty.get(@repoinfo.headers.location)
+            if response["name"] && response["owner"]["login"]
+              @user = response["owner"]["login"]
+              @repo = response["name"]
+              server = Github.new(user: @user, repo: @repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
+              @repoinfo = server.repos.get
+            end
+          end
+          server
         end
   end
 
@@ -178,8 +191,21 @@ class GithubCom < Website
     commits = @server.repos.commits.list
   end
 
+  def last_commit
+    return @last_commit if @last_commit
+    if @ref
+      @last_commit =  HTTParty.get("https://api.github.com/repos/"+@user+"/"+@repo+"/commits/"+@ref,
+                                     headers: {"Accept" => "application/vnd.github.VERSION.sha",
+                                               "User-Agent"=>"LicenseBook",
+                                               "Authorization"=> "token #{AUTO_CONF.github.access_token}"
+                                     })
+    else
+      @last_commit = list_commits.first
+    end
+  end
+
   def latest_commit
-    latest = list_commits.first
+    list_commits.first
   end
 
   def clone
