@@ -38,7 +38,7 @@ class GithubCom < Website
           LicenseAuto.logger.debug("Running LicenseAuto in RSpec mode")
           Github.new(user: user, repo: repo)
         rescue NameError => e
-          LicenseAuto.logger.debug("Running LicenseAuto in formal mode")
+          LicenseAuto.logger.debug("Running LicenseAuto in formal mode,username #{AUTO_CONF.github.username}")
           basic_auth = "#{AUTO_CONF.github.username}:#{AUTO_CONF.github.access_token}"
           server = Github.new(user: @user, repo: @repo, basic_auth: basic_auth, auto_pagination: auto_pagination)
           @repoinfo = server.repos.get
