@@ -192,7 +192,7 @@ class GithubCom < Website
   end
 
   def last_commit
-    return @last_commit if @last_commit
+    return @last_commit if ( @last_commit && !@last_commit =~/{.*}/)
     if @ref
       @last_commit =  HTTParty.get("https://api.github.com/repos/"+@user+"/"+@repo+"/commits/"+@ref,
                                      headers: {"Accept" => "application/vnd.github.VERSION.sha",
