@@ -4,7 +4,7 @@ require 'webmock/rspec'
 
 require 'license_auto'
 
-
+WebMock.allow_net_connect!
 # Disable WebMock (all adapters)
 # WebMock.disable!
 
