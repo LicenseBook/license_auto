@@ -192,15 +192,16 @@ class GithubCom < Website
   end
 
   def last_commit
-    return @last_commit if ( @last_commit && !@last_commit =~/{.*}/)
+    return @last_commit if ( @last_commit && @last_commit.size==40)
     if @ref
+      LicenseAuto.logger.debug("get last_commit https://api.github.com/repos/"+@user+"/"+@repo+"/commits/"+@ref+" token #{AUTO_CONF.github.access_token[0..3]}")
       @last_commit =  HTTParty.get("https://api.github.com/repos/"+@user+"/"+@repo+"/commits/"+@ref,
                                      headers: {"Accept" => "application/vnd.github.VERSION.sha",
                                                "User-Agent"=>"LicenseBook",
                                                "Authorization"=> "token #{AUTO_CONF.github.access_token}"
                                      })
     else
-      @last_commit = list_commits.first
+      @last_commit = list_commits.first.sha
     end
   end
 
