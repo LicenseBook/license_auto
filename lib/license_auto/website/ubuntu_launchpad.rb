@@ -137,6 +137,11 @@ class UbuntuLaunchpad < Website
     source_package_homepage, source_package_download_url = find_source_package_homepage_and_download_url
     LicenseAuto.logger.info("source_package_homepage: #{source_package_homepage}")
     LicenseAuto.logger.info("source_package_download_url: #{source_package_download_url}")
+    pack_wrapper = LicenseAuto::PackWrapper.new(
+        homepage: source_package_homepage,
+        project_url: nil,
+        source_url: source_package_download_url
+    )
     if source_package_download_url
       source_code_path = download_source_code(source_package_download_url)
       LicenseAuto.logger.info("#{source_code_path}")
@@ -193,7 +198,7 @@ class UbuntuLaunchpad < Website
           }
         else
           # $plog.error("source_package_download_url: #{source_package_download_url}, can NOT be uncompressed.")
-          return [[],[]]
+          return [[],pack_wrapper]
         end
 
         if reader
@@ -253,13 +258,9 @@ class UbuntuLaunchpad < Website
           text: license_text
       )
     end
-    pack_wrapper = LicenseAuto::PackWrapper.new(
-        homepage: source_package_homepage,
-        project_url: nil,
-        source_url: source_package_download_url
-    )
 
-    [license_files,pack_wrapper]
+
+    [[license_files],pack_wrapper]
   end
 
   def get_license_info
