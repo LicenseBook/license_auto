@@ -178,7 +178,7 @@ class UbuntuLaunchpad < Website
             elsif out.length > 0
               out.each {|line|
                 license_file_path = line.gsub(/\n/, '')
-                if @root_license_only and !API::Helper.is_root_file(license_file_path)
+                if @root_license_only and !Helper.is_root_file(license_file_path)
                   next
                 end
                 cmd_read_content = "tar -xjO --file=#{source_code_path} #{license_file_path} -C /dev/null"
@@ -190,7 +190,7 @@ class UbuntuLaunchpad < Website
                   elsif out2.length > 0
                     license_text = out2
                     license_url = license_file_path
-                    $plog.debug(license_text)
+                    LicenseAuto.logger.debug(license_text)
                     break
                   end
                 }
