@@ -142,6 +142,7 @@ class UbuntuLaunchpad < Website
         project_url: nil,
         source_url: source_package_download_url
     )
+
     if source_package_download_url
       source_code_path = download_source_code(source_package_download_url)
       LicenseAuto.logger.info("#{source_code_path}")
@@ -198,14 +199,14 @@ class UbuntuLaunchpad < Website
           }
         else
           # $plog.error("source_package_download_url: #{source_package_download_url}, can NOT be uncompressed.")
-          return [[],pack_wrapper]
+          return [ [], pack_wrapper]
         end
 
         if reader
           tar_extract = Gem::Package::TarReader.new(reader.open(source_code_path))
           tar_extract.rewind # The extract has to be rewinded after every iteration
           tar_extract.each do |entry|
-            puts entry.full_name
+            # puts entry.full_name
             # puts entry.directory?
             # puts entry.file?
             # puts entry.read
@@ -246,7 +247,7 @@ class UbuntuLaunchpad < Website
       end
     end
 
-    license_files = []
+
     if license_text
       # license = License_recognition.new.similarity(license_text, STD_LICENSE_DIR)
       license_name, sim_ratio = LicenseAuto::Similarity.new(license_text).most_license_sim
@@ -257,10 +258,13 @@ class UbuntuLaunchpad < Website
           download_url: nil,
           text: license_text
       )
+      return [[license_files],pack_wrapper]
+    else
+      return [[],pack_wrapper]
     end
 
 
-    [[license_files],pack_wrapper]
+
   end
 
   def get_license_info
