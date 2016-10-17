@@ -18,12 +18,23 @@ module LicenseAuto
     # TEST:        http://registry.npmjs.org/grunt
     def get_package_meta
       if @package.name.include?('/')
-        api_url = "#{@registry}#{@package.name.gsub('/','%2F')}"
+        api_url = "#{@registry}#{@package.name.gsub('/', '%2F')}"
       else
         api_url = "#{@registry}#{@package.name}"
       end
       LicenseAuto.logger.debug(api_url)
-      response = HTTParty.get(api_url)
+      retry_times = 0
+      begin
+        response = HTTParty.get(api_url)
+      rescue Errno::ECONNABORTED,Errno::ETIMEDOUT => e
+        License.logger.debug("rescue")
+        if (retry_times < 5)
+          retry_times+=1
+          License.logger.debug("Errno::ECONNABORTED,ETIMEDOUT retry #{retry_times} times")
+          retry
+        end
+        raise e
+      end
 
       if response.code == 200
         Hashie::Mash.new(JSON.parse(response.body))
@@ -59,7 +70,7 @@ module LicenseAuto
       all_versions = package_meta.versions
 
 
-      all_versions.select {|version, meta|
+      all_versions.select { |version, meta|
         # Example: node -e "var semver = require('semver'); var result = semver.satisfies('1.2.3', '1.x || >=2.5.0 || 5.0.0 - 7.2.3'); console.log(result);"
         cmd = "node -e \"var semver = require('semver'); var available = semver.satisfies('#{version}', '#{sem_version_range}'); console.log(available);\""
         stdout_str, _stderr_str, _status = Open3.capture3(cmd)
@@ -126,7 +137,7 @@ module LicenseAuto
         elsif not npm_info.licenses.empty?
           # TODO:
           LicenseAuto.logger.error(npm_info.licenses)
-          license_files = npm_info.licenses.map {|license|
+          license_files = npm_info.licenses.map { |license|
             LicenseAuto::LicenseWrapper.new(
                 name: license.type,
                 sim_ratio: 1.0,
@@ -148,7 +159,7 @@ module LicenseAuto
           # DOC: https://docs.npmjs.com/files/package.json#license
           # Eg. ["LGPL-2.1", "MIT"]
           licenses = npm_info.license.gsub(/^\(/, '').gsub(/\)$/, '').gsub(/\b(AND|OR)\b/, ' ').split(' ')
-          license_files = licenses.map {|license_name|
+          license_files = licenses.map { |license_name|
             LicenseAuto::LicenseWrapper.new(
                 name: license_name,
                 sim_ratio: 1.0,
