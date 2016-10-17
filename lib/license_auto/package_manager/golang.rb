@@ -30,7 +30,13 @@ module LicenseAuto
         ####
         GC::Profiler.enable
         deps.each {|dep|
-          remote, latest_sha = fetch_remote_latest_sha(dep)
+          begin
+            remote, latest_sha = fetch_remote_latest_sha(dep)
+          rescue Github::Error::NotFound => e
+            LicenseAuto.logger.fatal(e)
+            remote, latest_sha = dep,""
+          end
+
           dep_array.push({
               name: dep.split('/').last,
               version: latest_sha,
